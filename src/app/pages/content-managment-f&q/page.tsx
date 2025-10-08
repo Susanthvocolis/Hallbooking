@@ -1,0 +1,143 @@
+"use client";
+
+import React, { useState } from "react";
+
+const tabs = ["Blogs", "FAQ Manager", "Static Pages"];
+const activeTab = "FAQ Manager";
+
+const statCards = [
+  {
+    label: "Total FAQs",
+    value: "47",
+    color: "bg-[#beb9f2]",
+    trend: "+12",
+    icon: "bg-[#7067ec]",
+  },
+  {
+    label: "Categories",
+    value: "10",
+    color: "bg-[#f7c5ee]",
+    trend: "+12",
+    icon: "bg-[#e146e7]",
+  },
+  {
+    label: "Most Viewed",
+    value: "1,547",
+    color: "bg-[#c8e3fd]",
+    trend: "+12",
+    icon: "bg-[#20c7f8]",
+  },
+  {
+    label: "Added this Week",
+    value: "15",
+    color: "bg-[#cafde7]",
+    trend: "+10",
+    icon: "bg-[#1ef49b]",
+  },
+];
+
+// Static FAQ array
+const faqs = [
+  "How do I book the hall?",
+  "What facilities are included in the hall booking?",
+  "How far in advance should I book?",
+  "Can we play music or have a DJ?",
+  "What are the check-in and check-out timings?",
+];
+
+const FAQManager: React.FC = () => {
+  const [openIdx, setOpenIdx] = useState<number | null>(null);
+  return (
+    <div className="min-h-screen bg-[#ede6f8] p-6">
+      {/* Header */}
+      <div className="bg-[#f4f1fa] rounded-xl p-5 mb-6">
+        <h2 className="text-2xl font-bold mb-2 text-black">Content Management</h2>
+        <p className="text-[#6b7282]">Monitor and manage all venue bookings across the platform</p>
+      </div>
+
+      {/* Tabs */}
+      <div className="bg-[#f4f1fa] rounded-xl flex gap-10 p-2 items-center mb-4">
+        {tabs.map((tab, idx) => (
+          <button
+            key={tab}
+            className={`px-7 py-2 text-black font-semibold rounded-lg ${
+              activeTab === tab ? "bg-[#ebe6f8]" : "hover:bg-white"
+            }`}
+          >
+            {tab}
+          </button>
+        ))}
+      </div>
+
+      {/* Stats */}
+      <div className="grid grid-cols-4 gap-4 mb-6">
+        {statCards.map((card, i) => (
+          <div key={i} className={`${card.color} flex items-center p-4 rounded-lg gap-3`}>
+            <div className={`${card.icon} w-7 h-7 rounded-md`}></div>
+            <div className="flex-1">
+              <div className="text-xl font-bold">{card.value}</div>
+              <div className="text-sm text-gray-500">{card.label}</div>
+            </div>
+            <span className="text-xs font-bold text-[#4d44b5]">{card.trend}</span>
+          </div>
+        ))}
+      </div>
+
+      {/* Filters row */}
+      <div className="bg-white rounded-xl flex flex-col md:flex-row items-center gap-4 p-5 mb-6">
+        <div className="flex flex-1 flex-wrap gap-2">
+          <input
+            type="text"
+            placeholder="Search FAQ by Question and Answer.........."
+            className="rounded border p-2 w-72"
+          />
+          <select className="rounded border p-2 w-36">
+            <option>All Categories</option>
+          </select>
+          <select className="rounded border p-2 w-36">
+            <option>Sort by date</option>
+          </select>
+        </div>
+        <div className="flex gap-2">
+          <button className="bg-[#7067ec] text-white rounded px-7 py-2 font-medium">Export</button>
+          <button className="bg-[#7067ec] text-white rounded px-7 py-2 font-medium">Add FAQs</button>
+        </div>
+      </div>
+
+      {/* FAQ List */}
+      <div className="bg-white rounded-xl p-6">
+        <div className="mb-4 text-lg font-semibold text-black">All FAQs</div>
+        <div className="space-y-3">
+          {faqs.map((faq, idx) => (
+            <div key={idx} className="bg-[#f9fafb] rounded flex flex-col">
+              <button
+                className="text-left px-5 py-3 font-medium focus:outline-none flex justify-between items-center"
+                onClick={() => setOpenIdx(openIdx === idx ? null : idx)}
+              >
+                <span className="text-[16px] text-black">{faq}</span>
+                <span className="text-gray-400">{openIdx === idx ? "▲" : "▼"}</span>
+              </button>
+              {openIdx === idx && (
+                <div className="px-5 pb-4 text-[#6b7282] text-[15px]">
+                  This is a placeholder answer for: "{faq}".
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default FAQManager;
+
+/*
+---------------
+API INTEGRATION GUIDE
+
+1. Replace static FAQs with dynamic state from your API.
+2. Add fetching logic (useEffect + useState) for faqs.
+3. You can expand the FAQ structure to include question/answer fields.
+---------------
+*/
