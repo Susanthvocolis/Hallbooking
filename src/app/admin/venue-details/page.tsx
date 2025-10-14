@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 
 // Define types for banquet hall data
 interface Owner {
@@ -54,12 +55,13 @@ const ViewDetails: React.FC = () => {
   // Combine main image with gallery for selection
   const allImages = [staticBanquetData.mainImage, ...staticBanquetData.gallery];
   const [selectedImage, setSelectedImage] = useState(allImages[0]);
+const router = useRouter();
 
   return (
     <div className="min-h-screen bg-[#e9daf8] p-4">
       <div className="max-w-6xl mx-auto bg-white rounded-lg overflow-hidden">
         <div className="flex items-center px-4 py-2 border-b">
-          <button className="mr-2 text-lg"  style={{ color: "black" }}>&lt;</button>
+          <button onClick={() => router.back()} className="mr-2 text-lg"  style={{ color: "black" }}>&lt;</button>
           <span className="font-medium" style={{ color: "black" }}>View Details</span>
         </div>
         <div className="flex flex-wrap md:flex-nowrap gap-8 px-6 py-6">

@@ -14,16 +14,29 @@ import {
     HiOutlineMenu,
 } from "react-icons/hi";
 
-const navItems = [
-    { icon: <HiOutlineHome className="w-5 h-5" />, label: "Dashboard", path: "/pages/dashboard", active: true },
-    { icon: <HiOutlineClipboardList className="w-5 h-5" />, label: "Venue Management", path: "/pages/venues" },
-    { icon: <HiOutlineUserGroup className="w-5 h-5" />, label: "User Management", path: "/pages/users" },
-    { icon: <HiOutlineCalendar className="w-5 h-5" />, label: "Booking Management", path: "/pages/bookings" },
-    { icon: <HiOutlineTicket className="w-5 h-5" />, label: "Support Tickets", path: "/pages/tickets" },
-    { icon: <HiOutlineDocumentReport className="w-5 h-5" />, label: "Content Management", path: "/pages/content" },
-    { icon: <HiOutlineChartBar className="w-5 h-5" />, label: "Analytics & Report", path: "/pages/analytics" },
-    { icon: <HiOutlineCog className="w-5 h-5" />, label: "Setting", path: "/pages/settings" },
+const owner = [
+    { icon: <HiOutlineHome className="w-5 h-5" />, label: "Dashboard", path: "/owner/dashboard", active: true },
+    { icon: <HiOutlineClipboardList className="w-5 h-5" />, label: "Venue Registration", path: "/owner/venue-registration" },
+    { icon: <HiOutlineUserGroup className="w-5 h-5" />, label: "Bookings", path: "/owner/booking-dashboard" },
+    { icon: <HiOutlineCalendar className="w-5 h-5" />, label: "Availability", path: "/owner/availability-calendar" },
+    { icon: <HiOutlineTicket className="w-5 h-5" />, label: "Enquiries", path: "/owner/enquiry-lead-manager" },
+    { icon: <HiOutlineDocumentReport className="w-5 h-5" />, label: "Reviews", path: "/owner/ratings-reviews" },
+    { icon: <HiOutlineCog className="w-5 h-5" />, label: "Settings", path: "/owner/profile-settings" },
 ];
+
+const admin = [
+    { icon: <HiOutlineHome className="w-5 h-5" />, label: "Dashboard", path: "/admin/dashboard", active: true },
+    { icon: <HiOutlineClipboardList className="w-5 h-5" />, label: "Venue Management", path: "/admin/venues" },
+    { icon: <HiOutlineUserGroup className="w-5 h-5" />, label: "User Management", path: "/admin/user-managment" },
+    { icon: <HiOutlineCalendar className="w-5 h-5" />, label: "Booking Management", path: "/admin/booking-managment" },
+    { icon: <HiOutlineTicket className="w-5 h-5" />, label: "Support Tickets", path: "/admin/support-ticket" },
+    { icon: <HiOutlineDocumentReport className="w-5 h-5" />, label: "Content Management", path: "/admin/content-managment" },
+    { icon: <HiOutlineChartBar className="w-5 h-5" />, label: "Analytics & Report", path: "/admin/analytics-report" },
+    { icon: <HiOutlineCog className="w-5 h-5" />, label: "Setting", path: "/admin/settings" },
+];
+
+const navItems = owner; // Change to 'admin' for admin panel
+
 const SideBar = () => {
     const pathname = usePathname();
     const [showSidebar, setShowSidebar] = useState(false);
@@ -34,7 +47,7 @@ const SideBar = () => {
                    pathname !== "/pages/login" && 
                    pathname !== '/pages/signup' && 
                    pathname !== '/pages/forgot-password' && 
-                   pathname !== '/pages/venue-details');
+                   pathname !== '/admin/venue-details');
 }, [pathname]);
 
     return (
@@ -74,7 +87,10 @@ const SideBar = () => {
                                         href={item.path}
                                         onClick={() => setSidebarOpen(false)}
                                         className={
-                                            "flex items-center gap-3 px-3 py-2 rounded-lg font-medium text-sm sm:text-base transition"
+                                            pathname === item.path
+                                                ? "bg-[#7067ec] text-white flex items-center gap-3 px-3 py-2 rounded-lg font-medium text-sm sm:text-base transition"
+                                                : "text-gray-600 hover:bg-gray-100 hover:text-gray-900 flex items-center gap-3 px-3 py-2 rounded-lg font-medium text-sm sm:text-base transition"
+                                            // "flex items-center gap-3 px-3 py-2 rounded-lg font-medium text-sm sm:text-base transition"
                                         }
                                     >
                                         {item.icon}

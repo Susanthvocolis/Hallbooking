@@ -6,7 +6,7 @@ const tabs = ["Blogs", "FAQ Manager", "Static Pages"];
 const activeTab = "Blogs";
 
 const BlogManagement: React.FC = () => (
-  <div className="min-h-screen bg-[#ede6f8] p-6">
+  <div className="overflow-y-scroll [scrollbar-width:none] h-[100vh] bg-[#ede6f8] p-6">
     {/* Page Header */}
     <div className="bg-[#f4f1fa] rounded-xl p-5 mb-6">
       <h2 className="text-2xl font-bold mb-2 text-black">Support Tickets</h2>
