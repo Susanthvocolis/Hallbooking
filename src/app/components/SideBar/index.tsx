@@ -32,10 +32,19 @@ const admin = [
     { icon: <HiOutlineTicket className="w-5 h-5" />, label: "Support Tickets", path: "/admin/support-ticket" },
     { icon: <HiOutlineDocumentReport className="w-5 h-5" />, label: "Content Management", path: "/admin/content-managment" },
     { icon: <HiOutlineChartBar className="w-5 h-5" />, label: "Analytics & Report", path: "/admin/analytics-report" },
-    { icon: <HiOutlineCog className="w-5 h-5" />, label: "Setting", path: "/admin/settings" },
+    { icon: <HiOutlineCog className="w-5 h-5" />, label: "Setting", path: "/admin/settings/general-setting" },
 ];
 
-const navItems = owner; // Change to 'admin' for admin panel
+
+const content = [
+    { label: "Dashboard", path: "/admin/content-managment", active: true },
+    { label: "Venue Management", path: "/admin/content-managment-f&q" },
+    { label: "User Management", path: "/admin/content-managment-customer-suppoer" },
+    
+];
+
+
+const navItems = admin; // Change to 'admin' for admin panel
 
 const SideBar = () => {
     const pathname = usePathname();
