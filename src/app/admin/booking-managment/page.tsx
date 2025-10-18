@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 
 // Types
 interface Booking {
@@ -12,35 +12,34 @@ interface Booking {
   amount: string;
 }
 
-// Stat cards - use custom tailwind classes now
 const statCards = [
   {
     label: "Total Bookings",
     value: "2,247",
-    color: "bg-card1",
+    color: "bg-[#beb9f2]",
     trend: "+12%",
-    icon: "bg-icon1",
+    icon: "bg-[#7067ec]",
   },
   {
     label: "Confirmed Bookings",
     value: "1,247",
-    color: "bg-card2",
+    color: "bg-[#f7c5ee]",
     trend: "+12%",
-    icon: "bg-icon2",
+    icon: "bg-[#e146e7]",
   },
   {
     label: "Pending Approval",
     value: "1,547",
-    color: "bg-card3",
+    color: "bg-[#c8e3fd]",
     trend: "+12%",
-    icon: "bg-icon3",
+    icon: "bg-[#20c7f8]",
   },
   {
     label: "Total Revenue",
     value: "₹24.8L",
-    color: "bg-card4",
+    color: "bg-[#cafde7]",
     trend: "+12%",
-    icon: "bg-icon4",
+    icon: "bg-[#1ef49b]",
   },
 ];
 
@@ -57,7 +56,7 @@ const staticBookings: Booking[] = Array(8)
   }));
 
 const BookingManagement: React.FC = () => {
-  // --- For API integration in future:
+  // ----- Future API integration -----
   // const [bookings, setBookings] = useState<Booking[]>([]);
   // const [loading, setLoading] = useState(true);
   // const [error, setError] = useState<string | null>(null);
@@ -172,3 +171,17 @@ const BookingManagement: React.FC = () => {
 };
 
 export default BookingManagement;
+
+
+/*
+---------------------------
+API INTEGRATION GUIDE
+
+1. Uncomment the useEffect/useState code block above and swap staticBookings for booking state.
+2. Replace "YOUR_API_ENDPOINT_HERE" with your real API.
+3. Adjust Booking type and UI as per your actual backend.
+4. Provide loading/error UI as needed.
+
+When your backend is ready, this component will seamlessly render real data!
+---------------------------
+*/

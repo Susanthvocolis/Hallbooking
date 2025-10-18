@@ -1,5 +1,6 @@
 "use client";
 
+import AllSectionsCombined from "@/app/components/UserSetting";
 import React, { useState } from "react";
 
 const settingsTabs = [
@@ -7,6 +8,19 @@ const settingsTabs = [
   "Booking & Pricing Controls", "Payment & Transaction Settings",
   "Content & CMS Settings", "Security & Compliance", "System Integrations",
   "Advanced Controls", "Notification Settings"
+];
+
+const SettingTabs = [
+  { name: "General Settings", tab: 0 },
+  { name: "User Management", tab: 1 },
+  { name: "Venue Owner Controls", tab: 2 },
+  { name: "Booking & Pricing Controls", tab: 3 },
+  { name: "Payment & Transaction Settings", tab: 4 },
+  { name: "Content & CMS Settings", tab: 5 },
+  { name: "Security & Compliance", tab: 6 },
+  { name: "System Integrations", tab: 7 },
+  { name: "Advanced Controls", tab: 8 },
+  { name: "Notification Settings", tab: 9 },
 ];
 
 const languagesList = [
@@ -19,7 +33,7 @@ const languagesList = [
 ];
 
 const Settings: React.FC = () => {
-  const [selectedTab, setSelectedTab] = useState(settingsTabs[0]);
+  const [selectedTab, setSelectedTab] = useState(SettingTabs[0]);
   const [activeLanguages, setActiveLanguages] = useState<string[]>(["English"]);
   const [email, setEmail] = useState("LoremIpsum123@gmail.com");
   const [contact, setContact] = useState("+90 9876543210");
@@ -47,9 +61,9 @@ const Settings: React.FC = () => {
       <div className="flex gap-6">
         {/* Tabs list */}
         <div className="bg-white rounded-xl px-5 py-7 w-[300px] flex flex-col gap-2 h-fit">
-          {settingsTabs.map((tab) => (
+          {SettingTabs.map((tab) => (
             <button
-              key={tab}
+              key={tab.tab}
               onClick={() => setSelectedTab(tab)}
               className={`text-left text-[15px] py-2 px-2 rounded flex items-center gap-2 ${
                 tab === selectedTab
@@ -62,7 +76,7 @@ const Settings: React.FC = () => {
                   tab === selectedTab ? "bg-black border-black" : "bg-white"
                 }`}
               ></span>
-              {tab}
+              {tab.name}
             </button>
           ))}
         </div>
@@ -154,6 +168,7 @@ const Settings: React.FC = () => {
             </div>
           </div>
         </div>
+        <AllSectionsCombined />
       </div>
     </div>
   );

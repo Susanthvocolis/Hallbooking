@@ -23,24 +23,10 @@ const CustomerSupport: React.FC = () => {
   return (
     <div className="min-h-screen bg-[#ede6f8] p-6">
       {/* Header */}
-      <div className="bg-[#f4f1fa] rounded-xl p-5 mb-6">
-        <h2 className="text-2xl font-bold mb-2 text-black">Content Management</h2>
-        <p className="text-[#6b7282]">Monitor and manage all venue bookings across the platform</p>
-      </div>
+      
 
       {/* Tabs */}
-      <div className="bg-[#f4f1fa] rounded-xl flex gap-10 p-2 items-center mb-6">
-        {tabs.map((tab, idx) => (
-          <button
-            key={tab}
-            className={`px-7 py-2 text-black font-semibold rounded-lg ${
-              activeTab === tab ? "bg-[#ebe6f8]" : "hover:bg-white"
-            }`}
-          >
-            {tab}
-          </button>
-        ))}
-      </div>
+     
 
       {/* Search and Sort Section */}
       <div className="bg-white rounded-xl p-5 mb-6">
