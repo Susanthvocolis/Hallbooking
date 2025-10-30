@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-
+import Image from 'next/image';
 export default function Home() {
   const [searchLocation, setSearchLocation] = useState('');
   const [eventType, setEventType] = useState('');
@@ -86,7 +86,7 @@ export default function Home() {
       </header>
 
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-r from-purple-600 to-blue-600 text-white">
+      <section className="bg-[url('/images/home-bg-baner.jpg')] bg-cover bg-no-repeat h-screen relative text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
           <div className="text-center">
             <h2 className="text-5xl font-bold mb-6">
@@ -137,6 +137,14 @@ export default function Home() {
                   </button>
                 </div>
               </div>
+            </div>
+            <div className='flex justify-between items-center'>
+              <Image
+              src={'/images/couples.png'} alt="Description of my image" width={200} height={200}
+              />
+              <Image
+              src={'/images/couples.png'} alt="Description of my image" width={200} height={200}
+              />
             </div>
           </div>
         </div>

@@ -1,10 +1,12 @@
 'use client'
 
-import { useState } from 'react'
-import Link from 'next/link'
-import { Formik, Form, Field, ErrorMessage } from 'formik'
-import * as Yup from 'yup'
-import { login } from '../../services/LoginService/loginService'
+import { ErrorMessage, Field, Form, Formik } from 'formik';
+import Cookies from 'js-cookie';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import * as Yup from 'yup';
+import { login } from '../../services/LoginService/loginService';
 
 // Validation schema using Yup
 const validationSchema = Yup.object({
@@ -32,17 +34,45 @@ const Login = () => {
     const [showPassword, setShowPassword] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
     const [rememberMe, setRememberMe] = useState(false)
+    const [error, setError] = useState<string | null>(null)
+    const router = useRouter()
+
 
     const handleSubmit = async (values: LoginFormData) => {
         setIsLoading(true)
         // Simulate API call
         const response = await login({ email: values.email, password: values.password })
-        if (response) {
-            console.log('Login response:', response)
-            alert('Login successful!')
+        if (response.status === 200) {
+            Cookies.set('jwt_token', response.jwtToken, { expires: 0.5 })
+            // router.push('/pages/dashboard')
+            setError(null)
+            setIsLoading(false)
+            const role = response.role
+            switch (role) {
+                case 'super_admin':
+                    router.push('/admin/dashboard')
+                    break
+                case 'employee':
+                    router.push('/admin/employee')
+                    break
+                case 'hall_owner':
+                    router.push('/admin/hallowner')
+                    break
+                case 'service_vendor':
+                    router.push('/admin/service_vendor')
+                    break
+                case 'end_user':
+                    router.push('/admin/end_user')
+                    break
+                default:
+                    router.push('/login')
+                    break
+            }
+        } else {
+            setError(response.message)
             setIsLoading(false)
         }
-        setIsLoading(false)
+
     }
 
     return (
@@ -119,12 +149,12 @@ const Login = () => {
                                         >
                                             {showPassword ? (
                                                 <svg className="h-4 w-4 sm:h-5 sm:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21" />
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                                                 </svg>
                                             ) : (
                                                 <svg className="h-4 w-4 sm:h-5 sm:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21" />
                                                 </svg>
                                             )}
                                         </button>
@@ -135,6 +165,7 @@ const Login = () => {
                                         className="mt-1 text-xs sm:text-sm text-red-600"
                                     />
                                 </div>
+                                <p className='text-red-500 text-sm'>{error}</p>
 
                                 {/* Remember Me & Forgot Password */}
                                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-2 sm:space-y-0">

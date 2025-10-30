@@ -1,5 +1,6 @@
 "use client";
 
+import ProtectedRoute from "@/app/ProtectedRoute";
 import React from "react";
 
 // Static stat card data
@@ -45,6 +46,7 @@ function Gauge({ value, color }: { value: number | string; color: string }) {
 }
 
 const AnalyticsReport: React.FC = () => (
+  <ProtectedRoute requiredRole={["super_admin"]}>
   <div className="overflow-y-scroll [scrollbar-width:none] h-[100vh] bg-[#ede6f8] p-6">
     {/* Header */}
     <div className="bg-[#f4f1fa] rounded-xl p-5 mb-6">
@@ -86,16 +88,7 @@ const AnalyticsReport: React.FC = () => (
       </div>
     </div>
   </div>
+  </ProtectedRoute>
 );
 
 export default AnalyticsReport;
-
-/*
----------------------------
-API/CHART INTEGRATION GUIDE
-
-1. To fetch real stats, use useEffect/useState.
-2. To visualize data, use a chart library like recharts, chart.js, or apexcharts.
-3. Replace Gauge() and chart placeholder with real visual components.
----------------------------
-*/

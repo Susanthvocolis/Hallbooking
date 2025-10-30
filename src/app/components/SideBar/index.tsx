@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
+import { DecodeJwtToken } from '@/app/utils/DecodeJwtToken';
 import clsx from "clsx";
 import {
     HiOutlineCalendar,
@@ -28,27 +29,31 @@ const admin = [
     { icon: <HiOutlineHome className="w-5 h-5" />, label: "Dashboard", path: "/admin/dashboard", active: true },
     { icon: <HiOutlineClipboardList className="w-5 h-5" />, label: "Venue Management", path: "/admin/venues" },
     { icon: <HiOutlineUserGroup className="w-5 h-5" />, label: "User Management", path: "/admin/user-managment" },
+    { icon: <HiOutlineUserGroup className="w-5 h-5" />, label: "Service Management", path: "/admin/service-management" },
+    { icon: <HiOutlineUserGroup className="w-5 h-5" />, label: "Employee Management", path: "/admin/employee-management" },
     { icon: <HiOutlineCalendar className="w-5 h-5" />, label: "Booking Management", path: "/admin/booking-managment" },
     { icon: <HiOutlineTicket className="w-5 h-5" />, label: "Support Tickets", path: "/admin/support-ticket" },
     { icon: <HiOutlineDocumentReport className="w-5 h-5" />, label: "Content Management", path: "/admin/content-managment" },
     { icon: <HiOutlineChartBar className="w-5 h-5" />, label: "Analytics & Report", path: "/admin/analytics-report" },
-    { icon: <HiOutlineCog className="w-5 h-5" />, label: "Setting", path: "/admin/general-setting" },
+    { icon: <HiOutlineCog className="w-5 h-5" />, label: "Setting", path: "/admin/settings" },
 ];
 
-const navItems = admin; // Change to 'admin' for admin panel
 
 const SideBar = () => {
     const pathname = usePathname();
     const [showSidebar, setShowSidebar] = useState(false);
     const [sidebarOpen, setSidebarOpen] = React.useState(false);
+    const decode = DecodeJwtToken();
+    
+    const navItems =  decode?.role === "super_admin" ? admin : owner;
 
     useEffect(() => {
-    setShowSidebar(pathname !== '/' && 
-                   pathname !== "/pages/login" && 
-                   pathname !== '/pages/signup' && 
-                   pathname !== '/pages/forgot-password' && 
-                   pathname !== '/admin/venue-details');
-}, [pathname]);
+        setShowSidebar(pathname !== '/' &&
+            pathname !== "/pages/login" &&
+            pathname !== '/pages/signup' &&
+            pathname !== '/pages/forgot-password' &&
+            pathname !== '/admin/venue-details');
+    }, [pathname]);
 
     return (
         <>
