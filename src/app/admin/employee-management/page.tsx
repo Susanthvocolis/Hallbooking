@@ -1,143 +1,91 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, useEffect, use } from 'react';
 import DataTable, { TableColumn } from 'react-data-table-component';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { FaRegEye, FaEdit } from "react-icons/fa";
 import { ImBin } from "react-icons/im";
 import ProtectedRoute from '@/app/ProtectedRoute';
+import { register, getEmployees, updateUser, deleteUser } from '@/app/services/LoginService/loginService';
+import Header from '@/app/components/Header';
 
 interface User {
-    id: number;
-    name: string;
-    type: string;
-    status: "Active" | "Pending";
-    location: string;
-    joined: string;
-    lastActive: string;
+    _id?: string;
+    fullName?: string;
+    email?: string;
+    phoneNo?: string;
+    employeeDetails?: {
+        department?: string;
+        permissions?: {
+            manageUsers?: number;
+            manageHallOwners?: number;
+            handleSupportTickets?: number;
+            manageBookings?: number;
+        }
+    }
 }
 
-const initialValues = {
-    venueName: '',
-    ownerName: '',
-    mobile: '',
-    email: '',
-    city: '',
-    location: '',
-    venueType: '',
-    pricePerDay: '',
-    capacityMin: '',
-    capacityMax: '',
-    gstin: '',
-    amenities: [] as string[],
-    gallery: null as File | null,
-    description: '',
-    terms: '',
-    codeInput: '',
-};
-
 const validationSchema = Yup.object({
-    venueName: Yup.string().required('Required'),
-    ownerName: Yup.string().required('Required'),
-    mobile: Yup.string().required('Required'),
-    email: Yup.string().email('Invalid email').required('Required'),
-    city: Yup.string().required('Required'),
-    location: Yup.string().required('Required'),
-    venueType: Yup.string().required('Required'),
-    pricePerDay: Yup.string().required('Required'),
-    capacityMin: Yup.number().required('Required'),
-    capacityMax: Yup.number().required('Required'),
-    gstin: Yup.string(),
-    amenities: Yup.array(),
-    description: Yup.string(),
-    terms: Yup.string(),
-    codeInput: Yup.string(),
+    fullName: Yup.string().required('Employee Name is required'),
+    email: Yup.string().email('Invalid email format').required('Email is required'),
+    phoneNo: Yup.string().required('Mobile No is required'),
+    employeeDetails: Yup.object().shape({
+        department: Yup.string().required('Department is required'),
+    })
 });
 
-const staticUsers: User[] = [
-    {
-        id: 1,
-        name: "Raj Sharma",
-        type: "Banquet",
-        status: "Pending",
-        location: "Mumbai, MH",
-        joined: "2025-07-22",
-        lastActive: "2025-07-22",
-    },
-    {
-        id: 2,
-        name: "Raj Sharma",
-        type: "Banquet",
-        status: "Pending",
-        location: "Mumbai, MH",
-        joined: "2025-07-22",
-        lastActive: "2025-07-22",
-    }
-    // ...Array(6).fill({
-    //     // id: 2,
-    //     name: "Raj Sharma",
-    //     type: "Banquet",
-    //     status: "Active",
-    //     location: "Mumbai, MH",
-    //     joined: "2025-07-22",
-    //     lastActive: "2025-07-22",
-    // }),
-];
 
-const columns: TableColumn<User>[] = [
-    {
-        name: 'Name',
-        selector: row => row.name,
-    },
-    {
-        name: 'Department',
-        selector: row => row.type,
-    },
-    // {
-    //     name: 'Status',
-    //     cell: row => (
-    //         row.status === "Pending" ?
-    //             <span className="bg-orange-100 text-orange-600 px-3 py-1 rounded-full text-xs font-semibold">Pending</span> :
-    //             <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-semibold">Active</span>
-    //     )
-    // },
-    // {
-    //     name: 'Location',
-    //     selector: row => row.location,
-    // },
-    {
-        name: 'Joined',
-        selector: row => row.joined,
-    },
-    {
-        name: 'Last Active',
-        selector: row => row.lastActive,
-    },
-    {
-        name: 'Actions',
-        cell: row => (
-            <div className="flex gap-2">
-                <button className="text-green-500 w-7 h-7 rounded-full flex items-center justify-center text-lg"><FaRegEye /></button>
-                <button className="text-orange-500 w-7 h-7 rounded-full flex items-center justify-center text-lg"><FaEdit /></button>
-                <button className="text-red-500 w-7 h-7 rounded-full flex items-center justify-center text-lg"><ImBin /></button>
-            </div>
-        )
-    }
-];
+const Table = ({ setShowForm, onEdit }: { setShowForm: (show: boolean) => void; onEdit: (employee: User) => void; }) => {
+    const [employees, setEmployees] = useState<User[]>([]);
 
-const Table = ({ setShowForm }: { setShowForm: (show: boolean) => void }) => {
+    const columns: TableColumn<User>[] = [
+        {
+            name: 'Name',
+            selector: row => row.fullName || '',
+        },
+        {
+            name: 'Department',
+            selector: row => row.employeeDetails?.department || '',
+        },
+        {
+            name: 'Actions',
+            cell: row => (
+                <div className="flex gap-2">
+                    <button className="text-green-500 w-7 h-7 rounded-full flex items-center justify-center text-lg"><FaRegEye /></button>
+                    <button onClick={() => onEdit(row)} className="text-orange-500 w-7 h-7 rounded-full flex items-center justify-center text-lg"><FaEdit /></button>
+                    <button onClick={() => row._id && handleDelete(row._id)} className="text-red-500 w-7 h-7 rounded-full flex items-center justify-center text-lg"><ImBin /></button>
+                </div>
+            )
+        }
+    ];
+
+    const fetchEmployees = async () => {
+        const employees = await getEmployees();
+        setEmployees(employees.data || []);
+    };
+
+    const handleDelete = async (userId: string) => {
+        const result = await deleteUser(userId);
+        if (result.status === 200) {
+            alert(result?.message);
+            fetchEmployees();
+        } else {
+            alert('Error deleting user');
+        }
+    }
+    useEffect(() => {
+        fetchEmployees();
+    }, []);
     return (
         <>
-            <h1 className="text-2xl font-bold mb-4">Employee Management</h1>
-            <p>Manage your Employee here.</p>
             <div>
                 <div className='flex justify-between items-center mb-4 bg-white p-4 rounded-lg'>
                     <p>All Employees</p>
-                    <button onClick={() => setShowForm(true)} className='bg-blue-500 text-white px-4 py-2 rounded-lg'>Add New Employee</button>
+                    <button onClick={() => { setShowForm(true), onEdit({}) }} className='bg-blue-500 text-white px-4 py-2 rounded-lg'>Add New Employee</button>
                 </div>
                 <DataTable
                     columns={columns}
-                    data={staticUsers}
+                    data={employees}
                     pagination
                     highlightOnHover
                 />
@@ -146,58 +94,135 @@ const Table = ({ setShowForm }: { setShowForm: (show: boolean) => void }) => {
     );
 }
 
-const RegisterForm = ({ setShowForm }: { setShowForm: (show: boolean) => void }) => {
+const RegisterForm = ({ setShowForm, editData }: { setShowForm: (show: boolean) => void; editData: User | null }) => {
+    const initialValues = editData || {
+        fullName: '',
+        email: '',
+        phoneNo: '',
+        employeeDetails: {
+            department: '',
+            permissions: {
+                manageUsers: 0,
+                manageHallOwners: 0,
+                handleSupportTickets: 0,
+                manageBookings: 0,
+            }
+        }
+    };
+
+    const onSubmit = async (values: any, { resetForm }: any) => {
+        const valuesToSubmit = { ...values, password: '12345678', role: 'employee' };
+        let result;
+        if (editData && editData?._id) {
+            // console.log('editData found', values);
+            result = await updateUser(editData._id, values);
+        } else {
+            result = await register(valuesToSubmit);
+        }
+        if (result.status === 200) {
+            alert(result?.message);
+            setShowForm(false);
+            //initial values will clear after submit
+            resetForm();
+        } else {
+            alert('Error in Registration');
+            setShowForm(true);
+        }
+    }
+    console.log('editData', editData);
     return (
         <main className="px-2 py-8 md:px-8  mx-auto">
             <h1 className="text-2xl font-bold mb-8">Employee Registration</h1>
             <Formik
                 initialValues={initialValues}
                 validationSchema={validationSchema}
-                onSubmit={(values, actions) => {
-                    alert('Employee Registration Submitted!\n' + JSON.stringify(values, null, 2));
-                    actions.setSubmitting(false);
-                }}
+                // onSubmit={async (values, actions) => {
+                //     const valuesToSubmit = { ...values, password: '12345678', role: 'employee' };
+                //     // const result = await register(valuesToSubmit)
+                //     let result;
+
+                //     if (editData) {
+                //         alert(editData)
+                //         // 🔹 Update existing employee
+                //         // result = await updateEmployee(editData._id, valuesToSubmit);
+                //     } else {
+                //         // 🔹 Create new employee
+                //         result = await register(valuesToSubmit);
+                //     }
+                //     if (result.status === 200) {
+                //         alert(result?.message);
+                //         setShowForm(false);
+                //     } else {
+                //         alert('Error in Registration');
+                //         setShowForm(true);
+                //     }
+                // }}
+                onSubmit={onSubmit}
             >
                 {({ setFieldValue, isSubmitting, values }) => (
                     <Form className="flex flex-col gap-5">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
-                                <label className="block text-sm font-semibold mb-1" htmlFor="venueName">Name</label>
-                                <Field name="venueName" className="w-full border rounded-lg p-2" />
-                                <ErrorMessage name="venueName" component="div" className="text-xs text-red-500" />
+                                <label className="block text-sm font-semibold mb-1" htmlFor="fullName">Employee Name</label>
+                                <Field name="fullName" className="w-full border rounded-lg p-2" />
+                                <ErrorMessage name="fullName" component="div" className="text-xs text-red-500" />
                             </div>
                             <div>
-                                <label className="block text-sm font-semibold mb-1" htmlFor="mobile">Mobile</label>
-                                <Field name="mobile" className="w-full border rounded-lg p-2" />
-                                <ErrorMessage name="mobile" component="div" className="text-xs text-red-500" />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-semibold mb-1" htmlFor="email">Email</label>
-                                <Field name="email" type="email" className="w-full border rounded-lg p-2" />
+                                <label className="block text-sm font-semibold mb-1" htmlFor="mobile">Email</label>
+                                <Field name="email" className="w-full border rounded-lg p-2" />
                                 <ErrorMessage name="email" component="div" className="text-xs text-red-500" />
                             </div>
                             <div>
+                                <label className="block text-sm font-semibold mb-1" htmlFor="mobile">Mobile No</label>
+                                <Field name="phoneNo" type="text" className="w-full border rounded-lg p-2" />
+                                <ErrorMessage name="phoneNo" component="div" className="text-xs text-red-500" />
+                            </div>
+                            <div>
                                 <label className="block text-sm font-semibold mb-1" htmlFor="location">Department</label>
-                                <Field name="location" className="w-full border rounded-lg p-2" />
-                                <ErrorMessage name="location" component="div" className="text-xs text-red-500" />
+                                <Field name="employeeDetails.department" className="w-full border rounded-lg p-2" />
+                                <ErrorMessage name="employeeDetails.department" component="div" className="text-xs text-red-500" />
                             </div>
                             <div>
                                 <label className="block text-sm font-semibold mb-1" htmlFor="venueType">Permission</label>
                                 <div className='flex justify-between items-center gap-4'>
                                     <label>Users Management</label>
-                                    <Field type="checkbox" name="userManagement" className="w-full border rounded-lg p-2" />
+                                    <Field type="checkbox" checked={values.employeeDetails?.permissions?.manageUsers === 1}
+                                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                                            setFieldValue(
+                                                "employeeDetails.permissions.manageUsers",
+                                                e.target.checked ? 1 : 0
+                                            )
+                                        } name="employeeDetails.permissions.manageUsers" className="w-full border rounded-lg p-2" />
                                 </div>
                                 <div className='flex justify-between items-center gap-4'>
                                     <label>HallOwners Management</label>
-                                    <Field type="checkbox" name="hallOwnersManagement" className="w-full border rounded-lg p-2" />
+                                    <Field type="checkbox" checked={values.employeeDetails?.permissions?.manageHallOwners === 1}
+                                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                                            setFieldValue(
+                                                "employeeDetails.permissions.manageHallOwners",
+                                                e.target.checked ? 1 : 0
+                                            )
+                                        } name="employeeDetails.permissions.manageHallOwners" className="w-full border rounded-lg p-2" />
                                 </div>
                                 <div className='flex justify-between items-center gap-4'>
                                     <label>SupportTickets Management</label>
-                                    <Field type="checkbox" name="supportTicketsManagement" className="w-full border rounded-lg p-2" />
+                                    <Field type="checkbox" checked={values.employeeDetails?.permissions?.handleSupportTickets === 1}
+                                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                                            setFieldValue(
+                                                "employeeDetails.permissions.handleSupportTickets",
+                                                e.target.checked ? 1 : 0
+                                            )
+                                        } name="employeeDetails.permissions.handleSupportTickets" className="w-full border rounded-lg p-2" />
                                 </div>
                                 <div className='flex justify-between items-center gap-4'>
                                     <label>Bookings Management</label>
-                                    <Field type="checkbox" name="bookingsManagement" className="w-full border rounded-lg p-2" />
+                                    <Field type="checkbox" checked={values.employeeDetails?.permissions?.manageBookings === 1}
+                                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                                            setFieldValue(
+                                                "employeeDetails.permissions.manageBookings",
+                                                e.target.checked ? 1 : 0
+                                            )
+                                        } name="employeeDetails.permissions.manageBookings" className="w-full border rounded-lg p-2" />
                                 </div>
                                 <ErrorMessage name="venueType" component="div" className="text-xs text-red-500" />
                             </div>
@@ -227,11 +252,20 @@ const RegisterForm = ({ setShowForm }: { setShowForm: (show: boolean) => void })
 }
 const EmployeeManagementPage = () => {
     const [showForm, setShowForm] = useState(false)
+    const [editData, setEditData] = useState<User | null>(null);
+
+    const handleEdit = (employee: User) => {
+        setEditData(employee);
+        setShowForm(true);
+    };
     return (
         <ProtectedRoute requiredRole={['super_admin']}>
-            <div className="overflow-y-scroll [scrollbar-width:none] h-[100vh] bg-[#ede6f8] p-6">
-                {showForm ? <RegisterForm setShowForm={setShowForm} /> : <Table setShowForm={setShowForm} />}
-            </div>
+            <>
+                <Header title='Employee Management' />
+                <div className="overflow-y-scroll [scrollbar-width:none] h-[90vh] bg-[#ede6f8] p-6">
+                    {showForm ? <RegisterForm setShowForm={setShowForm} editData={editData} /> : <Table setShowForm={setShowForm} onEdit={handleEdit} />}
+                </div>
+            </>
         </ProtectedRoute>
     )
 }

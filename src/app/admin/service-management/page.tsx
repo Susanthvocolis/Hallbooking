@@ -6,6 +6,7 @@ import * as Yup from 'yup';
 import { FaRegEye, FaEdit } from "react-icons/fa";
 import { ImBin } from "react-icons/im";
 import ProtectedRoute from '@/app/ProtectedRoute';
+import Header from '@/app/components/Header';
 
 interface User {
     id: number;
@@ -119,8 +120,6 @@ const columns: TableColumn<User>[] = [
 const Table = ({ setShowForm }: { setShowForm: (show: boolean) => void }) => {
     return (
         <>
-            <h1 className="text-2xl font-bold mb-4">Service Management</h1>
-            <p>Manage your services here.</p>
             <div>
                 <div className='flex justify-between items-center mb-4 bg-white p-4 rounded-lg'>
                     <p>All Services</p>
@@ -236,9 +235,12 @@ const ServiceManagementPage = () => {
     const [showForm, setShowForm] = useState(false)
     return (
         <ProtectedRoute requiredRole={['super_admin']}>
-            <div className="overflow-y-scroll [scrollbar-width:none] h-[100vh] bg-[#ede6f8] p-6">
+            <>
+            <Header title='Service Management'/>
+            <div className="overflow-y-scroll [scrollbar-width:none] h-[90vh] bg-[#ede6f8] p-6">
                 {showForm ? <RegisterForm setShowForm={setShowForm} /> : <Table setShowForm={setShowForm} />}
             </div>
+            </>
         </ProtectedRoute>
     )
 }

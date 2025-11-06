@@ -21,6 +21,7 @@ import {
 } from "react-icons/hi";
 import clsx from "clsx";
 import ProtectedRoute from '@/app/ProtectedRoute';
+import Header from '@/app/components/Header';
 
 interface User {
     id: number;
@@ -185,7 +186,7 @@ function VenueCard({ venue, }: { venue: typeof venues[0]; }) {
 const Table = ({ setShowForm }: { setShowForm: (show: boolean) => void }) => {
     return (
         <>
-            <section className="mb-6">
+            {/* <section className="mb-6">
                 <div className="bg-white rounded-xl p-6 shadow-sm">
                     <h1 className="font-bold text-2xl">Venue Management</h1>
                     <div className="flex items-center gap-2 text-sm text-gray-400 mb-2">
@@ -195,7 +196,7 @@ const Table = ({ setShowForm }: { setShowForm: (show: boolean) => void }) => {
                         <span className="text-black font-medium">Venue Management</span>
                     </div>
                 </div>
-            </section>
+            </section> */}
             {/* Stats */}
             <section className="mb-6 grid grid-cols-2 md:grid-cols-6 gap-4">
                 {stats.map((stat) => (
@@ -398,10 +399,13 @@ const RegisterForm = ({ setShowForm }: { setShowForm: (show: boolean) => void })
 const ServiceManagementPage = () => {
     const [showForm, setShowForm] = useState(false)
     return (
-        <ProtectedRoute requiredRole={['super_admin']}>
-        <div className="overflow-y-scroll [scrollbar-width:none] h-[100vh] bg-[#ede6f8] p-6">
+        <ProtectedRoute requiredRole={['super_admin','venue_owner']}>
+            <>
+            <Header title='Venue Management'/>
+        <div className="overflow-y-scroll [scrollbar-width:none] h-[90vh] bg-[#ede6f8] p-6">
             {showForm ? <RegisterForm setShowForm={setShowForm} /> : <Table setShowForm={setShowForm} />}
         </div>
+        </>
         </ProtectedRoute>
     )
 }

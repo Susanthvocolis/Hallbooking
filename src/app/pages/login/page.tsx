@@ -55,14 +55,14 @@ const Login = () => {
                 case 'employee':
                     router.push('/admin/employee')
                     break
-                case 'hall_owner':
-                    router.push('/admin/hallowner')
+                case 'venue_owner':
+                    router.push('/owner/dashboard')
                     break
                 case 'service_vendor':
-                    router.push('/admin/service_vendor')
+                    router.push('/owner/dashboard')
                     break
                 case 'end_user':
-                    router.push('/admin/end_user')
+                    router.push('/')
                     break
                 default:
                     router.push('/login')

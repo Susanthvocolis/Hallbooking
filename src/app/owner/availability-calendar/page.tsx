@@ -1,6 +1,7 @@
 'use client'
 import React, { useState } from "react";
 import { Formik, Form, Field } from "formik";
+import ProtectedRoute from "@/app/ProtectedRoute";
 
 // Helper to get days in month and their weekday
 const getMonthDays = (year: number, month: number) => {
@@ -65,6 +66,7 @@ const AvailabilityCalendar: React.FC = () => {
   };
 
   return (
+    <ProtectedRoute requiredRole={['hall_owner','service_vendor']}>
     <div className="overflow-y-scroll [scrollbar-width:none] h-[100vh] bg-[#eeeff9]">
       {/* Header */}
       <header className="flex items-center justify-between bg-white px-8 py-4 border-b">
@@ -136,6 +138,7 @@ const AvailabilityCalendar: React.FC = () => {
         </div>
       </main>
     </div>
+    </ProtectedRoute>
   );
 };
 

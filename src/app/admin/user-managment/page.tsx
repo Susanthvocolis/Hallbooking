@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import ProtectedRoute from "@/app/ProtectedRoute";
+import Header from "@/app/components/Header";
 // ---------- Types ----------
 interface User {
   id: number;
@@ -110,10 +111,10 @@ const Table = ({ setShowForm }: { setShowForm: (show: boolean) => void }) => {
   return (
     <div>
       {/* Header */}
-      <div className="bg-[#f4f1fa] rounded-xl p-5 mb-6">
+      {/* <div className="bg-[#f4f1fa] rounded-xl p-5 mb-6">
         <h2 className="text-2xl font-bold mb-2 text-black">User Management</h2>
         <p className="text-[#6b7282]">Manage customers and venue owners across the platform</p>
-      </div>
+      </div> */}
 
       {/* Stat Cards */}
       <div className="grid grid-cols-4 gap-4 mb-6">
@@ -268,9 +269,12 @@ const UserManagement: React.FC = () => {
   const [showForm, setShowForm] = useState(false)
   return (
     <ProtectedRoute requiredRole={['super_admin']}>
-      <div className="overflow-y-scroll [scrollbar-width:none] h-[100vh] bg-[#ede6f8] p-6">
-        {showForm ? <RegisterForm setShowForm={setShowForm} /> : <Table setShowForm={setShowForm} />}
-      </div>
+      <>
+        <Header title='User Management' />
+        <div className="overflow-y-scroll [scrollbar-width:none] h-[90vh] bg-[#ede6f8] p-6">
+          {showForm ? <RegisterForm setShowForm={setShowForm} /> : <Table setShowForm={setShowForm} />}
+        </div>
+      </>
     </ProtectedRoute>
   );
 };

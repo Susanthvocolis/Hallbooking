@@ -1,5 +1,6 @@
 "use client";
 
+import Header from "@/app/components/Header";
 import ProtectedRoute from "@/app/ProtectedRoute";
 import React, { useState } from "react";
 
@@ -122,12 +123,14 @@ const SupportTickets: React.FC = () => {
 
   return (
     <ProtectedRoute requiredRole={["super_admin"]}>
-      <div className="overflow-y-scroll [scrollbar-width:none] h-[100vh] bg-[#ede6f8] p-6">
+      <>
+      <Header title="Support Tickets"/>
+      <div className="overflow-y-scroll [scrollbar-width:none] h-[90vh] bg-[#ede6f8] p-6">
         {/* Header */}
-        <div className="bg-[#f4f1fa] rounded-xl p-5 mb-6">
+        {/* <div className="bg-[#f4f1fa] rounded-xl p-5 mb-6">
           <h2 className="text-2xl font-bold mb-2 text-black">Support Tickets</h2>
           <p className="text-[#6b7282]">Monitor and manage all venue bookings across the platform</p>
-        </div>
+        </div> */}
 
         {/* Stat Cards */}
         <div className="grid grid-cols-4 gap-4 mb-6">
@@ -167,10 +170,10 @@ const SupportTickets: React.FC = () => {
         </div>
 
         {/* Filters/Columns Buttons */}
-        <div className="flex justify-end gap-3 mb-2">
+        {/* <div className="flex justify-end gap-3 mb-2">
           <button className="bg-[#7067ec] text-white rounded px-5 py-2 font-medium">Filters</button>
           <button className="bg-[#f4f1fa] text-[#7067ec] rounded px-5 py-2 font-medium">Columns</button>
-        </div>
+        </div> */}
 
         {/* Tickets Table */}
         <div className="bg-white rounded-xl p-5 overflow-auto">
@@ -214,6 +217,7 @@ const SupportTickets: React.FC = () => {
           </table>
         </div>
       </div>
+      </>
     </ProtectedRoute>
   );
 };

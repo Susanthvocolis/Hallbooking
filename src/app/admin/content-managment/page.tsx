@@ -5,6 +5,7 @@ import React, { useState } from "react";
 import ProtectedRoute from "@/app/ProtectedRoute";
 import CustomerSupport from "./content-managment-customer-suppoer/page";
 import FAQManager from "./content-managment-f&q/page";
+import Header from "@/app/components/Header";
 
 // Dummy component for Blogs (replace this with real blog management UI)
 const Blogs = () => (
@@ -48,39 +49,42 @@ const BlogManagement: React.FC = () => {
 
   return (
     <ProtectedRoute requiredRole={['super_admin']}>
-      <div className="overflow-y-scroll [scrollbar-width:none] h-[100vh] bg-[#ede6f8] p-6">
-        {/* Main Header */}
-        <div className="bg-[#f4f1fa] rounded-xl p-5 mb-6">
-          <h2 className="text-2xl font-bold mb-2 text-black">Blog Management</h2>
-          <p className="text-[#6b7282]">Monitor and manage all venue bookings across the platform</p>
-        </div>
+      <>
+      <Header title="Blog Management"/>
+        <div className="overflow-y-scroll [scrollbar-width:none] h-[90vh] bg-[#ede6f8] p-6">
+          {/* Main Header */}
+          {/* <div className="bg-[#f4f1fa] rounded-xl p-5 mb-6">
+            <h2 className="text-2xl font-bold mb-2 text-black">Blog Management</h2>
+            <p className="text-[#6b7282]">Monitor and manage all venue bookings across the platform</p>
+          </div> */}
 
-        {/* Tabs - matches your screenshot */}
-        <div className="bg-[#e6def4] rounded-2xl px-4 py-5 flex gap-10 items-center mb-4">
-          {tabs.map((tab, idx) => (
-            <button
-              key={tab.name}
-              className={`flex-1 py-4 text-xl font-semibold rounded-2xl transition 
+          {/* Tabs - matches your screenshot */}
+          <div className="bg-[#e6def4] rounded-2xl px-4 py-5 flex gap-10 items-center mb-4">
+            {tabs.map((tab, idx) => (
+              <button
+                key={tab.name}
+                className={`flex-1 py-4 text-xl font-semibold rounded-2xl transition 
               ${activeTab === idx
-                  ? "bg-[#d9ceef] shadow-[0_6px_16px_rgba(110,87,195,0.09)] text-black"
-                  : "bg-white text-black"
-                }`}
-              style={{
-                marginLeft: idx === 0 ? 0 : "10px",
-                marginRight: idx === tabs.length - 1 ? 0 : "10px"
-              }}
-              onClick={() => setActiveTab(idx)}
-            >
-              {tab.name}
-            </button>
-          ))}
-        </div>
+                    ? "bg-[#d9ceef] shadow-[0_6px_16px_rgba(110,87,195,0.09)] text-black"
+                    : "bg-white text-black"
+                  }`}
+                style={{
+                  marginLeft: idx === 0 ? 0 : "10px",
+                  marginRight: idx === tabs.length - 1 ? 0 : "10px"
+                }}
+                onClick={() => setActiveTab(idx)}
+              >
+                {tab.name}
+              </button>
+            ))}
+          </div>
 
-        {/* Content for the selected tab */}
-        <div className="rounded-xl p-0">
-          {tabs[activeTab].component}
+          {/* Content for the selected tab */}
+          <div className="rounded-xl p-0">
+            {tabs[activeTab].component}
+          </div>
         </div>
-      </div>
+      </>
     </ProtectedRoute>
   );
 };
