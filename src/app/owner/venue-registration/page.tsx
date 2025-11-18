@@ -1,4 +1,6 @@
 'use client'
+import Header from '@/app/components/Header';
+import ProtectedRoute from '@/app/ProtectedRoute';
 import { createVenue, getVenueListByOwnerId } from '@/app/services/VenuService/venueService';
 import { DecodeJwtToken } from '@/app/utils/DecodeJwtToken';
 import clsx from "clsx";
@@ -60,7 +62,7 @@ function VenueCard({ venue, }: { venue: any; }) {
     >
       <div className="relative">
         <img
-          src={images[index]}
+          src={`${process.env.NEXT_PUBLIC_IMAGE_API_URL}${images[index]}`}
           alt={venue.name}
           className="h-32 w-full object-cover"
         />
@@ -107,32 +109,20 @@ function VenueCard({ venue, }: { venue: any; }) {
 }
 
 const Table = ({ setShowForm }: { setShowForm: (show: boolean) => void }) => {
+  const Decode = DecodeJwtToken()
   const [venues, setVenues] = useState([]);
-  const ownerId = "69078524cf55a7de58dadf1f"; // This should be dynamically set based on logged-in user
+  const ownerId = Decode?.id
 
   useEffect(() => {
     const fetchVenues = async () => {
-      const data = await getVenueListByOwnerId(ownerId);
+      const data = await getVenueListByOwnerId(ownerId || "");
       setVenues(data.data || []);
     };
     fetchVenues();
-  }, [ownerId]);
+  }, []);
 
   return (
     <>
-      {/* Header */}
-      <header className="flex items-center justify-between bg-white px-8 py-4 border-b">
-        <div />
-        <div className="flex items-center space-x-4">
-          <div className="text-right">
-            <div className="font-semibold text-lg">John Doe</div>
-            <div className="text-sm text-gray-500">Venue Owner</div>
-          </div>
-          <div className="w-12 h-12 rounded-full bg-[#7d7cd3] flex items-center justify-center text-white font-bold text-xl">
-            {/* JD initials */}
-          </div>
-        </div>
-      </header>
       <section>
         <div className="bg-white rounded-xl p-6 shadow-sm">
           <div className='flex justify-between items-center mb-4'>
@@ -376,9 +366,14 @@ const VenueRegistration: React.FC = () => {
   const [showForm, setShowForm] = useState(false);
 
   return (
-    <div className="overflow-y-scroll [scrollbar-width:none] h-[90vh] bg-[#eeeff9]">
-      {showForm ? <RegisterForm setShowForm={setShowForm} /> : <Table setShowForm={setShowForm} />}
-    </div>
+    <ProtectedRoute requiredRole={["venue_owner", "service_vendor"]}>
+      <>
+        <Header title='Venue Management' />
+        <div className="overflow-y-scroll [scrollbar-width:none] h-[90vh] bg-[#eeeff9]">
+          {showForm ? <RegisterForm setShowForm={setShowForm} /> : <Table setShowForm={setShowForm} />}
+        </div>
+      </>
+    </ProtectedRoute>
   );
 };
 

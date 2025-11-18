@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { Formik, Form, Field } from "formik";
 import ProtectedRoute from "@/app/ProtectedRoute";
+import Header from "@/app/components/Header";
 
 // Helper to get days in month and their weekday
 const getMonthDays = (year: number, month: number) => {
@@ -66,78 +67,65 @@ const AvailabilityCalendar: React.FC = () => {
   };
 
   return (
-    <ProtectedRoute requiredRole={['hall_owner','service_vendor']}>
-    <div className="overflow-y-scroll [scrollbar-width:none] h-[100vh] bg-[#eeeff9]">
-      {/* Header */}
-      <header className="flex items-center justify-between bg-white px-8 py-4 border-b">
-        <div />
-        <div className="flex items-center space-x-4">
-          <div className="text-right">
-            <div className="font-semibold text-lg">John Doe</div>
-            <div className="text-sm text-gray-500">Venue Owner</div>
-          </div>
-          <div className="w-12 h-12 rounded-full bg-[#7d7cd3] flex items-center justify-center text-white font-bold text-xl">
-            JD
-          </div>
-        </div>
-      </header>
-
-      <main className="px-2 py-8 md:px-8 max-w-5xl mx-auto">
-        <h1 className="text-3xl font-bold mb-6">Availability Calendar</h1>
-
-        {/* Month Selector & Legend */}
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4 gap-4">
-          <div className="flex items-center gap-3 text-lg font-medium">
-            <button aria-label="Previous Month" onClick={prevMonth} className="p-1">
-              <span className="inline-block rotate-90 text-[#7d7cd3]">&#8593;</span>
-            </button>
-            <span>
-              {monthNames[month]} {year}
-            </span>
-            <button aria-label="Next Month" onClick={nextMonth} className="p-1">
-              <span className="inline-block -rotate-90 text-[#7d7cd3]">&#8593;</span>
-            </button>
-          </div>
-          <div className="flex items-center gap-6">
-            <span className="flex items-center gap-2 text-[#7d7cd3]">
-              <span className="w-4 h-4 rounded bg-[#7d7cd3] inline-block" />
-              <span className="text-sm">Available Dates</span>
-            </span>
-            <span className="flex items-center gap-2 text-black">
-              <span className="w-4 h-4 rounded bg-black inline-block" />
-              <span className="text-sm">Unavailable Dates</span>
-            </span>
-          </div>
-        </div>
-
-        {/* Calendar Grid */}
-        <div className="w-full bg-white rounded-xl shadow-sm border p-4">
-          <div className="grid grid-cols-7 border-b pb-2 mb-2">
-            {["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"].map((d) => (
-              <div key={d} className="text-center text-sm font-semibold text-gray-600 py-1">
-                {d}
+    <ProtectedRoute requiredRole={['venue_owner', 'service_vendor']}>
+      <>
+        <Header title="Availability Calendar" />
+        <div className="overflow-y-scroll [scrollbar-width:none] h-[90vh] bg-[#eeeff9]">
+          <main className="px-2 py-8 md:px-8 max-w-5xl mx-auto">
+            {/* Month Selector & Legend */}
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4 gap-4">
+              <div className="flex items-center gap-3 text-lg font-medium">
+                <button aria-label="Previous Month" onClick={prevMonth} className="p-1">
+                  <span className="inline-block rotate-90 text-[#7d7cd3]">&#8593;</span>
+                </button>
+                <span>
+                  {monthNames[month]} {year}
+                </span>
+                <button aria-label="Next Month" onClick={nextMonth} className="p-1">
+                  <span className="inline-block -rotate-90 text-[#7d7cd3]">&#8593;</span>
+                </button>
               </div>
-            ))}
-          </div>
-          <div className="grid grid-cols-7 gap-y-3 min-h-[370px]">
-            {calendarCells.map((d, i) => (
-              <div
-                key={i}
-                className={`h-10 flex items-center justify-center text-base font-medium
+              <div className="flex items-center gap-6">
+                <span className="flex items-center gap-2 text-[#7d7cd3]">
+                  <span className="w-4 h-4 rounded bg-[#7d7cd3] inline-block" />
+                  <span className="text-sm">Available Dates</span>
+                </span>
+                <span className="flex items-center gap-2 text-black">
+                  <span className="w-4 h-4 rounded bg-black inline-block" />
+                  <span className="text-sm">Unavailable Dates</span>
+                </span>
+              </div>
+            </div>
+
+            {/* Calendar Grid */}
+            <div className="w-full bg-white rounded-xl shadow-sm border p-4">
+              <div className="grid grid-cols-7 border-b pb-2 mb-2">
+                {["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"].map((d) => (
+                  <div key={d} className="text-center text-sm font-semibold text-gray-600 py-1">
+                    {d}
+                  </div>
+                ))}
+              </div>
+              <div className="grid grid-cols-7 gap-y-3 min-h-[370px]">
+                {calendarCells.map((d, i) => (
+                  <div
+                    key={i}
+                    className={`h-10 flex items-center justify-center text-base font-medium
                   ${d === null ? "" :
-                    isUnavailable(d) ? "text-black font-bold" :
-                    isAvailable(d) ? "text-[#7d7cd3]" :
-                    "text-gray-400"
-                  }
+                        isUnavailable(d) ? "text-black font-bold" :
+                          isAvailable(d) ? "text-[#7d7cd3]" :
+                            "text-gray-400"
+                      }
                 `}
-              >
-                {d ? pad(d) : ""}
+                  >
+                    {d ? pad(d) : ""}
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
+            </div>
+          </main>
         </div>
-      </main>
-    </div>
+      </>
     </ProtectedRoute>
   );
 };

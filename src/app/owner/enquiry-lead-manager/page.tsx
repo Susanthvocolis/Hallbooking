@@ -1,6 +1,8 @@
 'use client'
 import React, { useState } from "react";
 import { Formik, Form, Field } from "formik";
+import ProtectedRoute from "@/app/ProtectedRoute";
+import Header from "@/app/components/Header";
 
 type LeadStatus = "New" | "Contacted";
 type Lead = {
@@ -68,24 +70,12 @@ const EnquiryLeadManager: React.FC = () => {
   // Optionally, actions can update lead status, etc.
 
   return (
+    <ProtectedRoute requiredRole={['venue_owner', 'service_vendor']}>
+      <>
+      <Header title="Enquiry & Lead Manager"/>
     <div className="overflow-y-scroll [scrollbar-width:none] h-[100vh] bg-[#eeeff9]">
-      {/* Header */}
-      <header className="flex items-center justify-between bg-white px-8 py-4 border-b">
-        <div />
-        <div className="flex items-center space-x-4">
-          <div className="text-right">
-            <div className="font-semibold text-lg">John Doe</div>
-            <div className="text-sm text-gray-500">Venue Owner</div>
-          </div>
-          <div className="w-12 h-12 rounded-full bg-[#7d7cd3] flex items-center justify-center text-white font-bold text-xl">
-            JD
-          </div>
-        </div>
-      </header>
-
+ 
       <main className="px-6 py-8 max-w-6xl mx-auto">
-        <h1 className="text-3xl font-bold mb-8">Enquiry & Lead Manager</h1>
-
         <div className="flex flex-col gap-6">
           {leads.map((lead, idx) => (
             <div
@@ -145,6 +135,8 @@ const EnquiryLeadManager: React.FC = () => {
         </div>
       </main>
     </div>
+    </>
+    </ProtectedRoute>
   );
 };
 

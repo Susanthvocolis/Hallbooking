@@ -54,7 +54,33 @@ export const SuperAdmin: NavItem[] = [
     {
         icon: <HiOutlineTicket className="w-5 h-5" />,
         label: "Support Tickets",
-        path: "/admin/support-ticket"
+        path: "/admin/support-ticket",
+        submenu: [
+            {
+                label: "Ticket Details View",
+                path: "/admin/support-ticket/ticket-details-view",
+            },
+            {
+                label: "Chat Support",
+                path: "/admin/support-ticket/chat-support-panel",
+            },
+            {
+                label: "Employee Assignment",
+                path: "/admin/support-ticket/employee-assignment",
+            },
+            {
+                label: "Email & Notifications",
+                path: "/admin/support-ticket/email-notifications",
+            },
+            {
+                label: "Feedback & Rating",
+                path: "/admin/support-ticket/feedback-rating",
+            },
+            {
+                label: "Escalation Management",
+                path: "/admin/support-ticket/escalation-management",
+            }
+        ]
     },
     {
         icon: <HiOutlineDocumentReport className="w-5 h-5" />,
